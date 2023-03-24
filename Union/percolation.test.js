@@ -69,8 +69,13 @@ describe("Percolation.js", () => {
 
 describe("Percolation unit", () => {
   test("should return average 0.4 < avg < 0.7", () => {
-    const result = new PercolationStats(10, 3).start();
-    const isInBounds = result < 0.7 && result > 0.4;
+    let result = new PercolationStats(10, 3).start();
+    let isInBounds = result < 0.7 && result > 0.4;
+
+    expect(isInBounds).toBe(true);
+
+    result = new Percolation(15, 5).start();
+    isInBounds = result < 0.7 && result > 0.4;
 
     expect(isInBounds).toBe(true);
   });

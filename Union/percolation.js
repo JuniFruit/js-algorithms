@@ -1,4 +1,3 @@
-// const prompt = require("prompt-sync");
 "use strict";
 
 export class Percolation {
@@ -128,11 +127,6 @@ export class PercolationStats {
 }
 
 void (() => {
-  // const size = prompt("Enter size of the grid: ");
-  // if (size < 1) throw new Error("Cannot be less than 1");
-  // const trials = prompt("Enter number of trials: ");
-  // if (trials < 1) throw new Error("Cannot be less than 1");
-
   const result = new PercolationStats(10, 3).start();
   console.log(`Average ${result}`);
 })();

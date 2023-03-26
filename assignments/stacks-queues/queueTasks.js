@@ -70,4 +70,36 @@ export class Deque {
   }
 }
 
-export class RandomizedQueue {}
+export class RandomizedQueue {
+  constructor() {
+    this.queue = new Deque();
+  }
+
+  isEmpty() {
+    return this.queue.size === 0;
+  }
+
+  sample() {
+    return this.queue.deque[this.#random()];
+  }
+
+  checkSize() {
+    return this.queue.checkSize();
+  }
+
+  dequeue() {
+    if (this.queue.checkSize() < 1) return null;
+    const prevLast = this.queue.deque[this.queue.tail - 1];
+    const randInd = this.#random();
+    this.queue.deque[this.queue.tail - 1] = this.queue.deque[randInd];
+    this.queue.deque[randInd] = prevLast;
+    return this.queue.removeLast();
+  }
+  enqueue(val) {
+    return this.queue.addFirst(val);
+  }
+
+  #random() {
+    return Math.floor(Math.random() * this.queue.size) + 1;
+  }
+}

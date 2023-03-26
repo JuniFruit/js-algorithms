@@ -1,4 +1,5 @@
 import { RandomizedQueue, Deque } from "./queueTasks";
+import { jest } from "@jest/globals";
 describe("Queue tasks", () => {
   describe("Deque", () => {
     test("method isEmpty should return boolean whether Deque is empty or not", () => {
@@ -65,7 +66,21 @@ describe("Queue tasks", () => {
       expect(deque.checkSize()).toBe(3);
       deque.removeLast();
       expect(deque.deque).toEqual([5, 7]);
+      deque.removeFirst();
+      deque.removeLast();
+      expect(deque.deque).toEqual([]);
     });
   });
-  describe("Randomized Queue", () => {});
+  describe("Randomized Queue", () => {
+    test("checkSize should return correct size", () => {
+      const queue = new RandomizedQueue();
+      expect(queue.checkSize()).toBe(0);
+    });
+    test("isEmpty should return boolean whether queue empty or not", () => {
+      const queue = new RandomizedQueue();
+      expect(queue.isEmpty()).toBe(true);
+      queue.enqueue(5);
+      expect(queue.isEmpty()).toBe(false);
+    });
+  });
 });

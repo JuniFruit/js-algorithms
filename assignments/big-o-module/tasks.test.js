@@ -27,6 +27,7 @@ describe("BigO Tasks", () => {
     });
     test("should return null if there is no such target", () => {
       expect(bitonicSearch(arr, 100)).toBeNull();
+      expect(bitonicSearch(arr, -1)).toBeNull();
     });
   });
 });

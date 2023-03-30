@@ -1,4 +1,5 @@
 import { basicMergeSort } from "./mergeSort";
+import { quickSort } from "./quickSort";
 // import { Point, CollinearFinder } from "./collinear/collinearPoints";
 describe("Divide and conquer sorts", () => {
   let input = [];
@@ -20,6 +21,13 @@ describe("Divide and conquer sorts", () => {
     expect(basicMergeSort(input2)).toEqual([1, 2, 3, 5, 7, 12, 18, 19, 22]);
 
     expect(basicMergeSort(input3)).toEqual([
+      14, 16, 18, 20, 21, 52, 55, 88, 92, 100, 123,
+    ]);
+  });
+  test("quick sort should return items in the ascending order", () => {
+    expect(quickSort(input2)).toEqual([1, 2, 3, 5, 7, 12, 18, 19, 22]);
+
+    expect(quickSort(input3)).toEqual([
       14, 16, 18, 20, 21, 52, 55, 88, 92, 100, 123,
     ]);
   });

@@ -1,5 +1,5 @@
 import { basicMergeSort } from "./mergeSort";
-import { quickSort } from "./quickSort";
+import { quickSort, quickSelect } from "./quickSort";
 // import { Point, CollinearFinder } from "./collinear/collinearPoints";
 describe("Divide and conquer sorts", () => {
   let input = [];
@@ -30,6 +30,12 @@ describe("Divide and conquer sorts", () => {
     expect(quickSort(input3)).toEqual([
       14, 16, 18, 20, 21, 52, 55, 88, 92, 100, 123,
     ]);
+  });
+  test("quick select should return k-th smallest element from n distinct keys array", () => {
+    expect(quickSelect([7, 10, 4, 3, 20, 15], 3)).toBe(7);
+    expect(quickSelect(input2, 3)).toBe(3);
+
+    expect(quickSelect(input3, 5)).toBe(21);
   });
 });
 

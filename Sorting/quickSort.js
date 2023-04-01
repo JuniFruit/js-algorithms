@@ -67,3 +67,33 @@ export const quickSelect = (input, k) => {
     return j;
   }
 };
+
+export const ThreeWayQuickSort = arr => {
+  function sort(a, l, r) {
+    if (r <= l) return;
+
+    let lt = l;
+    let gt = r;
+    let pivotElement = a[l];
+    let i = l;
+
+    while (i <= gt) {
+      if (pivotElement > a[i]) {
+        [a[i], a[lt]] = [a[lt], a[i]];
+        i++;
+        lt++;
+      } else if (pivotElement < a[i]) {
+        [a[i], a[gt]] = [a[gt], a[i]];
+        gt--;
+      } else {
+        i++;
+      }
+    }
+
+    sort(a, l, lt - 1);
+    sort(a, gt + 1, r);
+  }
+
+  sort(arr, 0, arr.length - 1);
+  return arr;
+};

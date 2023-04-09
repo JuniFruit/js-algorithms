@@ -1,4 +1,5 @@
 import { Board, Solver } from "./puzzleSolver";
+import { jest } from "@jest/globals";
 
 describe("Puzzle Solver", () => {
   describe("Board", () => {
@@ -73,6 +74,29 @@ describe("Puzzle Solver", () => {
 
       expect(neighbors[0].tiles).toEqual(input2);
       expect(neighbors[1].tiles).toEqual(input6);
+
+      const board2 = new Board(input3);
+      const neighbors2 = board2.neighbors();
+      expect(neighbors2[0].tiles).toEqual([
+        [1, 2, 3],
+        [0, 4, 5],
+        [7, 8, 6],
+      ]);
+      expect(neighbors2[1].tiles).toEqual([
+        [1, 2, 3],
+        [4, 5, 0],
+        [7, 8, 6],
+      ]);
+      expect(neighbors2[2].tiles).toEqual([
+        [1, 0, 3],
+        [4, 2, 5],
+        [7, 8, 6],
+      ]);
+      expect(neighbors2[3].tiles).toEqual([
+        [1, 2, 3],
+        [4, 8, 5],
+        [7, 0, 6],
+      ]);
     });
   });
 
@@ -82,7 +106,8 @@ describe("Puzzle Solver", () => {
       [4, 2, 5],
       [7, 8, 6],
     ];
-    test("solution should return array of boards in a shortest solution; null if unsolvable ", () => {
+
+    test("solution should return array of boards in a shortest solution; [] if unsolvable ", () => {
       const second = [
         [1, 0, 3],
         [4, 2, 5],
@@ -108,16 +133,23 @@ describe("Puzzle Solver", () => {
 
       const solver = new Solver(board);
       const solution = solver.solution();
-      expect(solution[0]).toEqual(second);
-      expect(solution[1]).toEqual(third);
-      expect(solution[2]).toEqual(forth);
-      expect(solution[3]).toEqual(final);
+      expect(solution[0].tiles).toEqual(second);
+      expect(solution[1].tiles).toEqual(third);
+      expect(solution[2].tiles).toEqual(forth);
+      expect(solution[3].tiles).toEqual(final);
     });
     test("isSolvable should check if board can be solved and return boolean ", () => {
       const board = new Board(initial);
+      const board2 = new Board([
+        [1, 2, 3],
+        [4, 5, 6],
+        [8, 7, 0],
+      ]);
       const solver = new Solver(board);
-
+      jest.spyOn(Solver.prototype, "_solve").mockImplementationOnce(() => []);
+      const solver2 = new Solver(board2);
       expect(solver.isSolvable()).toBe(true);
+      expect(solver2.isSolvable()).toBe(false);
     });
     test("moves should return smallest number of moves to solve the puzzle ", () => {
       const board = new Board(initial);

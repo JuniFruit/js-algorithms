@@ -61,6 +61,8 @@ class MinHeap {
     return !!this.heap[ind];
   }
 
+  update() {}
+
   #canSwap(ind) {
     return (
       (this.#exists(this.#leftChild(ind)) &&
@@ -94,7 +96,7 @@ class MinHeap {
 export class Board {
   tiles = [];
   moves = Infinity;
-  priority = 0;
+  priority = undefined;
   neighborsArr = [];
   constructor(tiles) {
     this.tiles = tiles;
@@ -219,8 +221,11 @@ export class Board {
       [upper.tiles[blank.y - 1][blank.x], upper.tiles[blank.y][blank.x]] = [
         upper.tiles[blank.y][blank.x],
         upper.tiles[blank.y - 1][blank.x],
-      ][(bottom.tiles[blank.y + 1][blank.x], bottom.tiles[blank.y][blank.x])] =
-        [bottom.tiles[blank.y][blank.x], bottom.tiles[blank.y + 1][blank.x]];
+      ];
+      [bottom.tiles[blank.y + 1][blank.x], bottom.tiles[blank.y][blank.x]] = [
+        bottom.tiles[blank.y][blank.x],
+        bottom.tiles[blank.y + 1][blank.x],
+      ];
       this.neighborsArr.push(upper, bottom);
     }
     if (blank.y === 0) {
@@ -254,15 +259,60 @@ export class Board {
 
 export class Solver {
   minPQ = new MinHeap();
+  solvedArr = [];
   constructor(board) {
     this.board = board;
+    this._solve();
   }
 
-  isSolvable() {}
+  isSolvable() {
+    let flatten = [];
+    let i = 0;
+    while (i < this.board.tiles.length) {
+      flatten = flatten.concat(this.board.tiles[i++]);
+    }
 
-  moves() {}
+    return countInversions(flatten) % 2 === 0;
 
-  solution() {
+    function countInversions(a) {
+      const [sorted, count] = sort(a);
+      return count;
+      function merge(l, r) {
+        const aux = [];
+        let count = 0;
+        while (l.length && r.length) {
+          if (l[0] <= r[0]) {
+            aux.push(l.shift());
+          } else {
+            aux.push(r.shift());
+            count += l.length;
+          }
+        }
+        return [[...aux, ...l, ...r], count];
+      }
+      function sort(arr) {
+        if (arr.length < 2) return [arr, 0];
+        const mid = arr.length >> 1;
+        const [left, count1] = sort(arr.splice(0, mid));
+        const [right, count2] = sort(arr);
+        const [merged, count3] = merge(left, right);
+        return [merged, count1 + count2 + count3];
+      }
+    }
+  }
+
+  #backtrack(board) {
+    let currentNode = board;
+    let boards = [];
+    while (currentNode.parent) {
+      boards.push(currentNode);
+      currentNode = currentNode.parent;
+    }
+    this.solvedArr = boards.reverse();
+  }
+
+  _solve() {
+    if (!this.isSolvable()) return [];
     this.minPQ.add(this.board);
     this.board.moves = 0;
     this.board.countPriority();
@@ -270,28 +320,32 @@ export class Solver {
 
     while (!this.minPQ.isEmpty()) {
       let current = this.minPQ.pop();
-
       if (current.isGoal()) {
-        return visited;
+        this.#backtrack(current);
+        break;
       }
       visited.push(current);
       const neighbors = current.neighbors();
-      //   console.log(neighbors);
+
       for (let neighbor of neighbors) {
-        if (!visited.some(node => node.isEqual(neighbor))) {
-          const tentative_moves = current.moves + 1;
-          if (this.minPQ.isAlreadyAdded(neighbor)) {
-            if (tentative_moves < neighbor.moves) {
-              neighbor.moves = tentative_moves;
-            }
-          } else {
-            neighbor.moves = tentative_moves;
-            neighbor.countPriority();
+        const tentative_moves = current.moves + 1;
+        if (tentative_moves < neighbor.moves) {
+          neighbor.moves = tentative_moves;
+          neighbor.parent = current;
+          neighbor.countPriority();
+          if (!this.minPQ.isAlreadyAdded(neighbor)) {
             this.minPQ.add(neighbor);
           }
         }
       }
     }
-    return [];
+  }
+
+  moves() {
+    return this.solvedArr.length;
+  }
+
+  solution() {
+    return this.solvedArr;
   }
 }

@@ -6,4 +6,4 @@ Solutions and recreation of algorithms described in [Coursera Algorithms Part I 
 
 - Javascript;
 - Jest;
-- Git
+- Git;

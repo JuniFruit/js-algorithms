@@ -1,4 +1,4 @@
-import { BST } from "./tables";
+import { BST, RedBlackBST } from "./tables";
 
 describe("Tables", () => {
   describe("Binary search tree table", () => {
@@ -93,6 +93,54 @@ describe("Tables", () => {
       expect(tree.size()).toBe(4);
       tree.deleteMin();
       expect(tree.size()).toBe(3);
+    });
+  });
+  describe("Red black binary search tree", () => {
+    let tree;
+
+    beforeEach(() => {
+      tree = new RedBlackBST();
+    });
+
+    afterEach(() => {
+      tree = undefined;
+    });
+
+    test("put should insert node and keep tree in left lean Red Black order ", () => {
+      tree.put(6, "H");
+      expect(tree.root.value).toBe("H");
+      tree.put(4, "L");
+      expect(tree.root.left.value).toBe("L");
+      tree.put(2, "M");
+      expect(tree.root.value).toBe("L");
+      expect(tree.root.left.value).toBe("M");
+      expect(tree.root.right.value).toBe("H");
+      tree.put(5, "O");
+      expect(tree.root.right.left.value).toBe("O");
+      tree.put(3, "J");
+      expect(tree.root.left.value).toBe("J");
+      expect(tree.root.left.left.value).toBe("M");
+    });
+
+    test("getMin and getMax should return largest and smallest keys respectively ", () => {
+      tree.put(2, "S");
+      tree.put(1, "H");
+      tree.put(7, "M");
+      tree.put(4, "O");
+      tree.put(8, "P");
+
+      expect(tree.getMin()).toBe(1);
+      expect(tree.getMax()).toBe(8);
+    });
+    test("floor should return largest key less than provided key ", () => {
+      tree.put(2, "S");
+      tree.put(1, "H");
+      tree.put(7, "M");
+      tree.put(4, "O");
+      tree.put(8, "P");
+
+      expect(tree.floor(8)).toBe(7);
+      expect(tree.floor(4)).toBe(2);
     });
   });
 });

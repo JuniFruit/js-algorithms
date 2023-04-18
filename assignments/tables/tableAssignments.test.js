@@ -1,5 +1,5 @@
 import { BST, Node } from "../../Tables/tables";
-import { isBST } from "./tablesAssignments";
+import { fourSum, isBST } from "./tablesAssignments";
 
 describe("Table Assignments", () => {
   test("isBST should check if a given tree is a binary search tree and return boolean", () => {
@@ -15,5 +15,11 @@ describe("Table Assignments", () => {
     tree2.right = new Node(3, "Q");
     tree2.right.left = new Node(8, "J");
     expect(isBST(tree2)).toBe(false);
+  });
+  test("4Sum should return 4 distinct integers that add up to the target sum", () => {
+    const nums = [2, 7, 4, 0, 9, 5, 1, 3];
+    const target = 20;
+
+    expect(fourSum(nums, target)).toEqual([4, 0, 7, 9]);
   });
 });

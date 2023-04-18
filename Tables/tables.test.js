@@ -1,5 +1,5 @@
 import { KdTree, Point, RectHV } from "./KdTree";
-import { BST, RedBlackBST } from "./tables";
+import { BST, HashMap, RedBlackBST } from "./tables";
 
 describe("Tables", () => {
   describe("Binary search tree table", () => {
@@ -192,6 +192,35 @@ describe("Tables", () => {
       points.forEach(p => tree.insert(p));
       const point = new Point(8, 5);
       expect(tree.nearest(point)).toEqual(points[4]);
+    });
+  });
+  describe("HashMap", () => {
+    let hashmap;
+    beforeEach(() => {
+      hashmap = new HashMap();
+    });
+    afterEach(() => {
+      hashmap = undefined;
+    });
+    test("assign should add item into hashmap", () => {
+      hashmap.assign("hello", "world");
+      const assigned = hashmap.get("hello");
+
+      expect(assigned).toBe("world");
+    });
+    test("assign should deal with collision when items added", () => {
+      hashmap.assign("hello", "world");
+      hashmap.assign("string", "world");
+      const assigned = hashmap.get("string");
+
+      expect(assigned).toBe("world");
+    });
+    test("contains return boolean if items is in hash map", () => {
+      hashmap.assign("string", "program");
+      hashmap.assign("hello", "world");
+
+      expect(hashmap.contains("hello")).toBe(true);
+      expect(hashmap.contains("str")).toBe(false);
     });
   });
 });

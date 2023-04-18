@@ -167,12 +167,9 @@ export class RedBlackBST {
     } else {
       node.val = val;
     }
-    if (this.isRed(node.right) && !this.isRed(node.left))
-      node = this.rotateLeft(node);
-    if (this.isRed(node.left.left) && this.isRed(node.left))
-      node = this.rotateRight(node);
-    if (this.isRed(node.left) && this.isRed(node.right))
-      node = this.flipColors(node);
+    if (this.isRed(node.right) && !this.isRed(node.left)) node = this.rotateLeft(node);
+    if (this.isRed(node.left.left) && this.isRed(node.left)) node = this.rotateRight(node);
+    if (this.isRed(node.left) && this.isRed(node.right)) node = this.flipColors(node);
 
     node.count = 1 + this.#getSize(node.left) + this.#getSize(node.right);
     return node;
@@ -232,5 +229,49 @@ export class RedBlackBST {
     node.left.color = this.black;
     node.right.color = this.black;
     return node;
+  }
+}
+
+export class HashMap {
+  constructor() {
+    this.hashmap = Array(50).fill(null);
+    this.size = 51;
+  }
+
+  hash(key) {
+    let hashCode = 0;
+    for (let i = 0; i < key.length; i++) {
+      hashCode += hashCode + key.charCodeAt(i);
+    }
+    return hashCode % this.hashmap.length;
+  }
+
+  assign(key, value) {
+    let hash = this.hash(key);
+
+    if (this.hashmap[hash] === null) {
+      return (this.hashmap[hash] = [key, value]);
+    } else {
+      while (this.hashmap[hash] !== null) {
+        hash++;
+      }
+    }
+
+    return (this.hashmap[hash] = [key, value]);
+  }
+  get(key) {
+    let hash = this.hash(key);
+
+    while (this.hashmap[hash] !== null) {
+      if (this.hashmap[hash][0] === key) {
+        return this.hashmap[hash][1];
+      }
+      hash++;
+    }
+
+    return null;
+  }
+  contains(key) {
+    return !!this.get(key);
   }
 }

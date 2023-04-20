@@ -1,23 +1,27 @@
 "use strict";
 
 export const basicMergeSort = arr => {
-  function merge(lArr, rArr) {
-    const aux = [];
+  function merge(left, right) {
+    let resultArray = [],
+      leftIndex = 0,
+      rightIndex = 0;
 
-    while (lArr.length && rArr.length) {
-      if (lArr[0] <= rArr[0]) {
-        aux.push(lArr.shift());
+    while (leftIndex < left.length && rightIndex < right.length) {
+      if (left[leftIndex] < right[rightIndex]) {
+        resultArray.push(left[leftIndex]);
+        leftIndex++;
       } else {
-        aux.push(rArr.shift());
+        resultArray.push(right[rightIndex]);
+        rightIndex++;
       }
     }
-    aux.push(...lArr, ...rArr);
-    return aux;
+
+    return resultArray.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
   }
 
   function sort(arr) {
     if (arr.length < 2) return arr;
-    let mid = Math.floor(arr.length / 2);
+    let mid = arr.length >> 1;
     const left = sort(arr.splice(0, mid));
     const right = sort(arr);
 

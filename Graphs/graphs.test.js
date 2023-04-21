@@ -1,4 +1,4 @@
-import { Connectivity, Graph, Paths } from "./graphs";
+import { BFSPath, Connectivity, Graph, Paths, topologicalSort } from "./graphs";
 
 describe("Graphs", () => {
   describe("Graph", () => {
@@ -27,6 +27,7 @@ describe("Graphs", () => {
       graph.create(10);
       graph.addEdge(0, 5);
       expect(graph.graph[0]).toEqual([5]);
+      expect(graph.graph[5]).toEqual([0]);
     });
   });
   describe("Paths", () => {
@@ -34,7 +35,7 @@ describe("Graphs", () => {
 
     beforeEach(() => {
       graph = new Graph();
-      graph.create(10);
+      graph.create(11);
       graph.addEdge(0, 6);
       graph.addEdge(0, 2);
       graph.addEdge(0, 1);
@@ -73,7 +74,7 @@ describe("Graphs", () => {
 
     beforeEach(() => {
       graph = new Graph();
-      graph.create(10);
+      graph.create(11);
       graph.addVertex(10);
       graph.addEdge(0, 6);
       graph.addEdge(0, 2);
@@ -99,6 +100,41 @@ describe("Graphs", () => {
       const conn = new Connectivity(graph);
 
       expect(conn.connectedCount()).toBe(3);
+    });
+  });
+  describe("Directed graphs", () => {
+    let diGraph;
+
+    beforeEach(() => {
+      diGraph = new Graph();
+      diGraph.create(7, true);
+      diGraph.addEdge(0, 1);
+      diGraph.addEdge(0, 2);
+      diGraph.addEdge(0, 5);
+      diGraph.addEdge(1, 4);
+      diGraph.addEdge(5, 2);
+      diGraph.addEdge(3, 2);
+      diGraph.addEdge(3, 5);
+      diGraph.addEdge(3, 4);
+      diGraph.addEdge(3, 6);
+      diGraph.addEdge(6, 4);
+      diGraph.addEdge(6, 0);
+    });
+
+    afterEach(() => {
+      diGraph = undefined;
+    });
+
+    test("topologicalSort should return items in order ", () => {
+      expect(topologicalSort(diGraph.graph)).toEqual([4, 1, 2, 5, 0, 6, 3]);
+    });
+    test("BFS path should traverse graph and have distances to all vertices", () => {
+      const traversed = new BFSPath(diGraph, 0);
+      expect(traversed.distTo(4)).toBe(2);
+      expect(traversed.distTo(5)).toBe(1);
+      expect(traversed.hasPath(5)).toBe(true);
+      expect(traversed.hasPath(3)).toBe(false);
+      expect(traversed.pathTo(4)).toEqual([0, 1, 4]);
     });
   });
 });

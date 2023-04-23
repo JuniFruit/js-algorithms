@@ -1,10 +1,4 @@
-import {
-  findCycle,
-  findCycleNodes,
-  findEulereanCycle,
-  findShortestCycle,
-  reachableVertex,
-} from "./challenges";
+import { findCycle, findEulereanCycle, findShortestCycle, reachableVertex } from "./challenges";
 
 describe("Graph tasks", () => {
   const graph1 = [[1, 2, 5, 6], [3], [3, 4], [], [5, 6], [], []];

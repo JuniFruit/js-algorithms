@@ -208,7 +208,7 @@ describe("Tables", () => {
 
       expect(assigned).toBe("world");
     });
-    test("assign should deal with collision when items added", () => {
+    test("assign should deal with collision when  items added", () => {
       hashmap.assign("hello", "world");
       hashmap.assign("string", "world");
       const assigned = hashmap.get("string");

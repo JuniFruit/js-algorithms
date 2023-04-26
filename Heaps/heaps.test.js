@@ -7,7 +7,6 @@ describe("Heaps", () => {
     });
     test("should track size when elements are added or removed", () => {
       const mHeap = new MinHeap();
-
       mHeap.add(5);
       expect(mHeap.size()).toBe(1);
       mHeap.add(11);

@@ -1,4 +1,14 @@
-import { BFSPath, Connectivity, Graph, Paths, topologicalSort } from "./graphs";
+import {
+  BFSPath,
+  Connectivity,
+  Edge,
+  Graph,
+  Paths,
+  WeightedGraph,
+  kruskalAlg,
+  primAlg,
+  topologicalSort,
+} from "./graphs";
 
 describe("Graphs", () => {
   describe("Graph", () => {
@@ -129,12 +139,64 @@ describe("Graphs", () => {
       expect(topologicalSort(diGraph.graph)).toEqual([4, 1, 2, 5, 0, 6, 3]);
     });
     test("BFS path should traverse graph and have distances to all vertices", () => {
-      const traversed = new BFSPath(diGraph, 0);
+      const traversed = new BFSPath(diGraph.graph, 0);
       expect(traversed.distTo(4)).toBe(2);
       expect(traversed.distTo(5)).toBe(1);
       expect(traversed.hasPath(5)).toBe(true);
       expect(traversed.hasPath(3)).toBe(false);
       expect(traversed.pathTo(4)).toEqual([0, 1, 4]);
+    });
+  });
+  describe("Weighted Graph", () => {
+    let graph;
+
+    beforeEach(() => {
+      graph = new WeightedGraph(8);
+      graph.addEdge(new Edge(0, 7, 0.16));
+      graph.addEdge(new Edge(2, 3, 0.17));
+      graph.addEdge(new Edge(1, 7, 0.19));
+      graph.addEdge(new Edge(0, 2, 0.26));
+      graph.addEdge(new Edge(5, 7, 0.28));
+      graph.addEdge(new Edge(1, 3, 0.29));
+      graph.addEdge(new Edge(1, 5, 0.32));
+      graph.addEdge(new Edge(2, 7, 0.34));
+      graph.addEdge(new Edge(4, 5, 0.35));
+      graph.addEdge(new Edge(1, 2, 0.36));
+      graph.addEdge(new Edge(4, 7, 0.37));
+      graph.addEdge(new Edge(0, 4, 0.38));
+      graph.addEdge(new Edge(6, 2, 0.4));
+      graph.addEdge(new Edge(3, 6, 0.52));
+      graph.addEdge(new Edge(6, 0, 0.58));
+    });
+    afterEach(() => {
+      graph = undefined;
+    });
+
+    test("Kruskal's algorigthm should return MST ", () => {
+      const mst = kruskalAlg(graph.graph);
+
+      expect(mst.length).toBe(7);
+
+      expect(mst[0].weight).toBe(0.16);
+      expect(mst[1].weight).toBe(0.17);
+      expect(mst[2].weight).toBe(0.19);
+      expect(mst[3].weight).toBe(0.26);
+      expect(mst[4].weight).toBe(0.28);
+      expect(mst[5].weight).toBe(0.35);
+      expect(mst[6].weight).toBe(0.4);
+    });
+    test("Prim's algorigthm should return MST ", () => {
+      const mst = primAlg(graph.graph);
+
+      expect(mst.length).toBe(7);
+
+      expect(mst[0].weight).toBe(0.16);
+      expect(mst[1].weight).toBe(0.19);
+      expect(mst[2].weight).toBe(0.26);
+      expect(mst[3].weight).toBe(0.17);
+      expect(mst[4].weight).toBe(0.28);
+      expect(mst[5].weight).toBe(0.35);
+      expect(mst[6].weight).toBe(0.4);
     });
   });
 });

@@ -1,5 +1,8 @@
 "use strict";
 
+import { MinHeapWithComparator } from "../Heaps/heaps";
+import { Union } from "../Union/union";
+
 export class Graph {
   graph = [];
   vertices = 0;
@@ -133,9 +136,9 @@ export class BFSPath {
   constructor(graph, start) {
     this.graph = graph;
     this.start = start;
-    this.marked = Array(graph.graph.length).fill(false);
-    this.distance = Array(graph.graph.length).fill(Infinity);
-    this.#bfs(graph.graph, start);
+    this.marked = Array(graph.length).fill(false);
+    this.distance = Array(graph.length).fill(Infinity);
+    this.#bfs(graph, start);
   }
 
   #bfs(g, src) {
@@ -145,6 +148,7 @@ export class BFSPath {
       let curr = queue.shift();
       this.marked[curr] = true;
       for (let v of g[curr]) {
+        if (isNaN(v)) continue;
         if (!this.marked[v]) {
           queue.push(v);
           this.distance[v] = this.distance[curr] + 1;
@@ -192,4 +196,97 @@ export const reverseGraph = input => {
     result[key] = map.get(key);
   }
   return result;
+};
+
+export class Edge {
+  constructor(start, end, weight = 1) {
+    this.start = start;
+    this.end = end;
+    this.weight = weight;
+  }
+
+  either() {
+    return this.start;
+  }
+  other(current) {
+    if (current === this.start) return this.end;
+    return this.start;
+  }
+  compareTo(vertex) {
+    if (!vertex) return 0;
+    return this.weight - vertex.weight;
+  }
+}
+
+export class WeightedGraph {
+  graph = [];
+
+  constructor(size) {
+    this.size = size;
+
+    for (let i = 0; i < size; i++) {
+      this.graph[i] = [];
+    }
+  }
+
+  addEdge(edge) {
+    let v = edge.either();
+    let w = edge.other(v);
+
+    this.graph[v].push(edge);
+    this.graph[w].push(edge);
+  }
+
+  adj(vertex) {
+    return this.graph[vertex];
+  }
+}
+
+export const kruskalAlg = g => {
+  const minPQ = new MinHeapWithComparator();
+  for (let edges of g) {
+    for (let edge of edges) {
+      minPQ.add(edge);
+    }
+  }
+
+  const mst = [];
+  const union = new Union(g.length);
+
+  while (!minPQ.isEmpty() && mst.length < g.length - 1) {
+    let min = minPQ.pop();
+    let v = min.either();
+    let w = min.other(v);
+    if (!union.isConnected(v, w)) {
+      mst.push(min);
+      union.union(v, w);
+    }
+  }
+  return mst;
+};
+
+export const primAlg = g => {
+  const minPQ = new MinHeapWithComparator();
+  const marked = Array(g.length).fill(false);
+  const mst = [];
+  visit(g, 0);
+  while (!minPQ.isEmpty()) {
+    const edge = minPQ.pop();
+    const v = edge.either();
+    const w = edge.other(v);
+    if (marked[v] && marked[w]) continue;
+    mst.push(edge);
+    if (!marked[v]) visit(g, v);
+    if (!marked[w]) visit(g, w);
+  }
+  return mst;
+
+  function visit(graph, start) {
+    marked[start] = true;
+    for (let edge of graph[start]) {
+      if (!marked[edge.other(start)]) {
+        minPQ.add(edge);
+      }
+    }
+  }
 };

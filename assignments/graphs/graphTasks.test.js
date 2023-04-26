@@ -1,4 +1,5 @@
 import { findCycle, findEulereanCycle, findShortestCycle, reachableVertex } from "./challenges";
+import { isInMST, minimumBottleneckMST } from "./weightedTasks";
 
 describe("Graph tasks", () => {
   const graph1 = [[1, 2, 5, 6], [3], [3, 4], [], [5, 6], [], []];
@@ -38,5 +39,29 @@ describe("Graph tasks", () => {
     expect(reachableVertex(graph7)).toBe(0);
     expect(reachableVertex(graph6)).toBe(-1);
     expect(reachableVertex(graph8)).toBe(4);
+  });
+});
+
+describe("Weighted", () => {
+  let graph = [
+    [0, 1, 20],
+    [0, 2, 5],
+    [0, 3, 10],
+    [2, 3, 10],
+  ];
+  let graph2 = [
+    [0, 1, 20],
+    [0, 2, 5],
+    [0, 3, 10],
+    [2, 3, 20],
+  ];
+
+  test("isInMST should return boolean whether edge is in MST or not", () => {
+    expect(isInMST(graph, [2, 3])).toBe(true);
+    expect(isInMST(graph2, [2, 3])).toBe(false);
+  });
+  test("minimumBottleneckMST should return number of minimum bottleneck of MST ", () => {
+    expect(minimumBottleneckMST(graph)).toBe(20);
+    expect(minimumBottleneckMST(graph2)).toBe(20);
   });
 });

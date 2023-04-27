@@ -66,3 +66,70 @@ const minWeightFeedbackEdge = g => {
   }
   return feedbackEdges.sort((a, b) => a[2] - b[2])[0];
 };
+
+export const minimumMonotonicPath = (g, s, d) => {
+  const distTo = Array(g.length).fill(Infinity);
+  const edgeTo = Array(g.length).fill(Infinity);
+
+  const minPQ = [[s, 0.0]];
+  distTo[s] = 0;
+  edgeTo[d] = Infinity;
+  while (minPQ.length) {
+    let min = minPQ.shift();
+    const [node] = min;
+    for (let edge of g[node]) {
+      const [start, end, weight] = edge;
+      if (distTo[end] > distTo[start] + weight) {
+        distTo[end] = distTo[start] + weight;
+        edgeTo[end] = weight;
+        minPQ.push([end, distTo[end]]);
+        minPQ.sort((a, b) => a[1] - b[1]);
+      }
+    }
+  }
+  return distTo[d] || -1;
+};
+
+export const secondShortestPath = (g, s, target) => {
+  const [path, length] = shortest(g, s, target);
+  const filteredGraph = deleteEdges(
+    g,
+    path.map(item => item[0])
+  );
+  const [secondPath, secondLength] = shortest(filteredGraph, s, target);
+
+  return secondLength;
+  function deleteEdges(graph, inputEdges) {
+    return graph.map((edges, v) => {
+      const filtered = edges.filter(item => !inputEdges.includes(item));
+      return filtered;
+    });
+  }
+  function shortest(G, start, dest) {
+    const distTo = Array(G.length).fill(Infinity);
+    const edgeTo = Array(G.length).fill();
+    const path = [];
+    const minPQ = [[start, 0.0]];
+    distTo[start] = 0;
+    while (minPQ.length) {
+      const min = minPQ.shift();
+      const [node] = min;
+      for (let edge of G[node]) {
+        const [start, end, weight] = edge;
+        if (distTo[end] > distTo[start] + weight) {
+          distTo[end] = distTo[start] + weight;
+          edgeTo[end] = [edge, start];
+          minPQ.push([end, distTo[end]]);
+          minPQ.sort((a, b) => a[1] - b[1]);
+        }
+      }
+    }
+    let curr = edgeTo[dest];
+
+    while (curr) {
+      path.push(curr);
+      curr = edgeTo[curr[1]];
+    }
+    return [path, distTo[dest]];
+  }
+};

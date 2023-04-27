@@ -221,8 +221,9 @@ export class Edge {
 export class WeightedGraph {
   graph = [];
 
-  constructor(size) {
+  constructor(size, isDirected = false) {
     this.size = size;
+    this.isDirected = isDirected;
 
     for (let i = 0; i < size; i++) {
       this.graph[i] = [];
@@ -234,7 +235,7 @@ export class WeightedGraph {
     let w = edge.other(v);
 
     this.graph[v].push(edge);
-    this.graph[w].push(edge);
+    this.isDirected ? null : this.graph[w].push(edge);
   }
 
   adj(vertex) {

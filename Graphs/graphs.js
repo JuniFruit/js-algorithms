@@ -291,3 +291,80 @@ export const primAlg = g => {
     }
   }
 };
+
+export class FlowEdge {
+  constructor(v = null, w = null, capacity = 0, flow = 0) {
+    this.from = v;
+    this.to = w;
+    this.capacity = capacity;
+    this.flow = flow;
+  }
+
+  other(vertex) {
+    if (vertex === this.from) return this.to;
+    if (vertex === this.to) return this.from;
+  }
+  residualCapacityTo(vertex) {
+    if (vertex === this.from) return this.flow;
+    if (vertex === this.to) return this.capacity - this.flow;
+  }
+
+  addResidualFlowTo(vertex, delta) {
+    if (vertex === this.from) this.flow -= delta;
+    if (vertex === this.to) this.flow += delta;
+  }
+}
+
+export class FlowNetwork {
+  graph = [];
+  constructor(size) {
+    this.V = size;
+    for (let i = 0; i < this.V; i++) {
+      this.graph[i] = new Array();
+    }
+  }
+
+  addEdge(edge) {
+    const v = edge.from;
+    const w = edge.to;
+    this.graph[v] = edge;
+    this.graph[w] = edge;
+  }
+}
+
+export const fordFulkersonAlg = (g, s, t) => {
+  const marked = Array(g.length).fill(false);
+  const edgeTo = Array(g.length);
+
+  let value = 0;
+  while (hasAugmentingPath(g, s, t)) {
+    let bottle = Infinity;
+    for (let v = t; v !== s; v = edgeTo[v].other(v)) {
+      bottle = Math.min(bottle, edgeTo[v].residualCapacityTo(v));
+    }
+
+    for (let v = t; v !== s; v = edgeTo[v].other(v)) {
+      edgeTo[v].addResidualFlowTo(v, bottle);
+    }
+    value += bottle;
+  }
+  return value;
+
+  function hasAugmentingPath(graph, start, target) {
+    const queue = [start];
+    const marked = Array(graph.length).fill(false);
+    while (queue.length) {
+      let curr = queue.shift();
+
+      for (let edge of graph[curr]) {
+        let w = edge.other(curr);
+        if (edge.residualCapacityTo(w) > 0 && !marked[w]) {
+          edgeTo[w] = curr;
+          marked[w] = true;
+          queue.push(w);
+        }
+      }
+    }
+    return marked[target];
+  }
+};

@@ -78,3 +78,62 @@ export const nonFixedLsd = input => {
   }
   return input;
 };
+
+export const boyenMoore = (str, pat) => {
+  const N = str.length;
+  const M = pat.length;
+  const R = 258;
+
+  const right = Array(R).fill(-1);
+
+  for (let j = 0; j < M; j++) {
+    right[pat.charCodeAt(j)] = j;
+  }
+
+  let skip;
+
+  for (let i = 0; i < N - M; i += skip) {
+    skip = 0;
+
+    for (let j = M - 1; j >= 0; j--) {
+      if (pat.charAt(j) !== str.charAt(j + i)) {
+        skip = Math.max(1, j - right[str.charCodeAt(j + i)]);
+        break;
+      }
+    }
+    if (skip === 0) return i;
+  }
+
+  return N;
+};
+
+export const rabinKarp = (str, pat) => {
+  const R = 256;
+  const Q = 997;
+  const M = pat.length;
+  const N = str.length;
+
+  let RM = 1;
+  for (let i = 1; i <= M - 1; i++) {
+    RM = (RM * R) % Q;
+  }
+  const patHash = hash(pat, M);
+  let textHash = hash(str, M);
+  if (patHash === textHash) return 0;
+
+  for (let i = M; i < N; i++) {
+    //prettier-ignore
+    textHash = (textHash + Q - RM * str.charCodeAt(i - M) % Q) % Q;
+    textHash = (textHash * R + str.charCodeAt(i)) % Q;
+    if (patHash === textHash) return i - M + 1;
+  }
+  return N;
+
+  function hash(str, len) {
+    let h = 0;
+    for (let i = 0; i < len; i++) {
+      h = (R * h + str.charCodeAt(i)) % Q;
+    }
+    return h;
+  }
+};

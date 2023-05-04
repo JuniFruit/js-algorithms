@@ -1,4 +1,4 @@
-import { keyIndexedSort, lsdSort, nonFixedLsd } from "./radixSorts";
+import { boyenMoore, keyIndexedSort, lsdSort, nonFixedLsd, rabinKarp } from "./radixSorts";
 
 describe("Radix sorts", () => {
   test("keyIndexedSort should return sorted arr by key ", () => {
@@ -42,5 +42,21 @@ describe("Radix sorts", () => {
 
     const input2 = ["23", "345", "5467", "12", "2345", "9852"];
     expect(nonFixedLsd(input2)).toEqual(["12", "23", "2345", "345", "5467", "9852"]);
+  });
+
+  test("Boyer Moore alg should return start index of found pattern ", () => {
+    const string = "NEEDLEINAHAYSTACK";
+
+    expect(rabinKarp(string, "HAY")).toBe(9);
+    expect(rabinKarp(string, "NEEDLE")).toBe(0);
+    expect(rabinKarp(string, "STACK")).toBe(12);
+  });
+
+  test("RabinKarp alg should return start index of found pattern ", () => {
+    const string = "NEEDLEINAHAYSTACK";
+
+    expect(rabinKarp(string, "HAY")).toBe(9);
+    expect(rabinKarp(string, "NEEDLE")).toBe(0);
+    expect(rabinKarp(string, "STACK")).toBe(12);
   });
 });

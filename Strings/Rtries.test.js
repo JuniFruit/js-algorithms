@@ -1,4 +1,4 @@
-import { RTries } from "./Rtries";
+import { RTries, SuffixTree } from "./Rtries";
 
 describe("R-way tries", () => {
   test("put should insert value with the key and maintain the balance ", () => {
@@ -64,5 +64,23 @@ describe("R-way tries", () => {
     tree.put("she", 4);
     tree.put("sell", 5);
     expect(tree.startWith("sh")).toEqual(["she", "shell", "shore"]);
+  });
+
+  describe("Suffix Tree", () => {
+    test("constructor should build suffix tree from input", () => {
+      const tree = new SuffixTree("bananna");
+      expect(tree.root.char).toBe("b");
+      expect(tree.root.left.char).toBe("a");
+      expect(tree.root.right.char).toBe("n");
+    });
+    test("search should return indices where pattern starts", () => {
+      const tree = new SuffixTree("banana");
+      expect(tree.search("banana")).toEqual([0]);
+      expect(tree.search("na")).toEqual([2, 4]);
+      const tree2 = new SuffixTree("Hello World, I'm very proud of being a programmer");
+      expect(tree2.search("Hello")).toEqual([0]);
+      expect(tree2.search("d")).toEqual([10, 26]);
+      expect(tree2.search("z")).toBe(null);
+    });
   });
 });

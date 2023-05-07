@@ -7,6 +7,7 @@ export class Node {
     this.right = null;
     this.val = null;
     this.char = null;
+    this.indices = [];
   }
   next(char) {
     if (this.char > char && this.left?.char === char) {
@@ -103,5 +104,60 @@ export class RTries {
     const root = this.#retrieve(this.root, prefix, 0);
     this.#collect(root, prefix.slice(0, prefix.length - 1), queue);
     return queue;
+  }
+}
+
+export class SuffixTree {
+  constructor(input) {
+    this.root = null;
+    this.build(input);
+  }
+
+  build(input) {
+    for (let i = 0; i < input.length; i++) {
+      this.put(input.substring(i), i);
+    }
+  }
+  put(key, index) {
+    this.root = this.#put(this.root, key, index, 0);
+  }
+
+  #put(node, key, val, d) {
+    const currChar = key.charAt(d);
+    if (!node) {
+      node = new Node();
+      node.char = currChar;
+    }
+    if (currChar < node.char) {
+      node.left = this.#put(node.left, key, val, d);
+    } else if (currChar > node.char) {
+      node.right = this.#put(node.right, key, val, d);
+    } else if (d < key.length - 1) {
+      node.mid = this.#put(node.mid, key, val, d + 1);
+      node.indices.push(val);
+    } else {
+      node.indices.push(val);
+      node.val = val;
+    }
+    return node;
+  }
+  search(pattern) {
+    const result = this.#get(this.root, pattern, 0);
+    return result;
+  }
+
+  #get(node, key, d) {
+    if (!node) return null;
+
+    const currChar = key.charAt(d);
+    if (currChar < node.char) {
+      return this.#get(node.left, key, d);
+    } else if (currChar > node.char) {
+      return this.#get(node.right, key, d);
+    } else if (d < key.length - 1) {
+      return this.#get(node.mid, key, d + 1);
+    } else {
+      return node.indices;
+    }
   }
 }

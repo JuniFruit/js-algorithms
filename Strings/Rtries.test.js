@@ -21,12 +21,16 @@ describe("R-way tries", () => {
     tree.put("she", 2);
     tree.put("bull", 3);
     tree.put("shell", 4);
+    tree.put("ZOO", 10);
+    tree.put("ZOOLOGY", 11);
 
     expect(tree.get("abc")).toBe(1);
     expect(tree.get("she")).toBe(2);
     expect(tree.get("bull")).toBe(3);
     expect(tree.get("shell")).toBe(4);
     expect(tree.get("storm")).toBe(-1);
+    expect(tree.get("ZOO")).toBe(10);
+    expect(tree.get("ZOOLOGY")).toBe(11);
   });
 
   test("delete should remove value and nodes (if necessary) by the key ", () => {

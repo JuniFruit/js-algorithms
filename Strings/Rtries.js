@@ -23,6 +23,8 @@ export class Node {
 
 export class RTries {
   root = null;
+  RADIX = 256;
+  START = 0;
 
   put(key, val) {
     this.root = this.#insert(this.root, key, val, 0);
@@ -88,10 +90,10 @@ export class RTries {
     return queue;
   }
   #collect(node, prefix, queue) {
-    const R = 256;
+    const R = this.RADIX;
 
     if (node.val !== null) queue.push(prefix + node.char);
-    for (let c = 0; c < R; c++) {
+    for (let c = this.START; c < R; c++) {
       let currChar = String.fromCharCode(c);
       const nextNode = node.next(currChar);
       if (nextNode) {
@@ -102,7 +104,9 @@ export class RTries {
   startWith(prefix) {
     const queue = [];
     const root = this.#retrieve(this.root, prefix, 0);
-    this.#collect(root, prefix.slice(0, prefix.length - 1), queue);
+    if (root !== -1) {
+      this.#collect(root, prefix.slice(0, prefix.length - 1), queue);
+    }
     return queue;
   }
 }

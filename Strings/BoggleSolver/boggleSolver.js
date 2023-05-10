@@ -54,13 +54,12 @@ export class BoggleSolver {
     const dfs = (i, j, string) => {
       if (i < 0 || i > N - 1 || j < 0 || j > N - 1) return;
       if (marked[i][j]) return;
-      string += board[i][j];
-      if (board[i][j] === "Qu") string = string[string.length - 1].toUpperCase();
+      const char = board[i][j] === "Qu" ? "QU" : board[i][j];
+      string += char;
       if (this.words.get(string) > -1) {
         this.results[string] = string.length;
       }
-      const startWithArr = this.words.startWith(string);
-      if (startWithArr.length === 0) return;
+
       marked[i][j] = true;
 
       dfs(i, j + 1, string);
@@ -76,24 +75,13 @@ export class BoggleSolver {
     dfs(i, j, "");
   }
   points(word) {
-    const fromResults = this.results[word];
-    if (!fromResults) return 0;
-    switch (fromResults) {
-      case 1:
-        return 0;
-      case 2:
-        return 0;
-      case 3:
-        return 1;
-      case 4:
-        return 1;
-      case 5:
-        return 2;
-      case 6:
-        return 3;
-      default:
-        return 11;
-    }
+    if (!this.results[word]) return 0;
+    else if (word.length < 3) return 0;
+    else if (word.length < 5) return 1;
+    else if (word.length == 5) return 2;
+    else if (word.length == 6) return 3;
+    else if (word.length == 7) return 5;
+    else return 11;
   }
   getAllWords() {
     return Object.keys(this.results);

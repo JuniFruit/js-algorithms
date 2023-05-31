@@ -135,7 +135,7 @@ describe("Graphs", () => {
       diGraph = undefined;
     });
 
-    test("topologicalSort should return items in order", () => {
+    test("topologicalSort should return items in order ", () => {
       expect(topologicalSort(diGraph.graph)).toEqual([4, 1, 2, 5, 0, 6, 3]);
     });
     test("BFS path should traverse graph and have distances to all vertices", () => {
